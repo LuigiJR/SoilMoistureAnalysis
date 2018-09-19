@@ -5,7 +5,7 @@ library(maps)
 
 #  Default geographic projection for lats and longs
 
-PROJ_LATLONG = '+proj=longlat +datum=WGS84'
+PROJ_LATLON = '+proj=longlat +datum=WGS84'
 
 
 # PLOTTING PARAMETERS
