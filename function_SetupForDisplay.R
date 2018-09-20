@@ -24,3 +24,7 @@ MoistureRamp = colorRampPalette(rgb(
   blue  = SMColors_b / 255.))
 
 
+DifferenceRamp = colorRampPalette(c('darkred','red','white','blue','navy'))
+
+
+
