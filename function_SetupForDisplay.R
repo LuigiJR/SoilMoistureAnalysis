@@ -3,11 +3,6 @@ library(ncdf4)
 library(maps)
 
 
-#  Default geographic projection for lats and longs
-
-PROJ_LATLON = '+proj=longlat +datum=WGS84'
-
-
 # PLOTTING PARAMETERS
 SMColors_r = rev(c(10,40,20,0,0,0,26,13,25,50,68,97,106,124,138,172,205,223,240,247,255,
 		255,244,238,255,255,255,245,255,255,255,255))
@@ -26,5 +21,47 @@ MoistureRamp = colorRampPalette(rgb(
 
 DifferenceRamp = colorRampPalette(c('darkred','red','white','blue','navy'))
 
+# COAST LINES
+addCoastLines = function(Proj=PROJ_TARGET,Colour='darkgrey') {
 
+## ---   if PROJ is lat-lon then plot the whole world coastline
+if (length(grep('longlat',Proj)) != 1) {
+        CountriesToPlot = c('Australia','New Zealand','Japan','Indonesia','India',
+                            'Papua New Guinea','Thailand','China','Malaysia',
+                            'Philippines','New Caledonia','Vietnam','Cambodia',
+                            'Laos','North Korea','South Korea','Taiwan','Myanmar',
+                            'Fiji','Solomon Islands','Vanuatu','Sri Lanka','Bangladesh')
+        gobalLats = map('world',plot=F,region=CountriesToPlot)$y
+        gobalLons = map('world',plot=F,region=CountriesToPlot)$x
+} else {
+        gobalLats = map('world',plot=F)$y
+        gobalLons = map('world',plot=F)$x
+}
+
+### -- getting rid of the lat and lons with NAs
+gLats = gobalLats[!is.na(gobalLats)]
+gLons = gobalLons[!is.na(gobalLons)]
+
+gLL   = SpatialPoints(cbind(gLons,gLats),proj4string = CRS('+proj=longlat +datum=WGS84'))
+gNE   = spTransform(gLL,CRS(Proj))  # - change to the relavnt NEW projection e.g. PROJ_GEO, PROJ_AEA, ..
+
+gE = coordinates(gNE)[,1]
+gN = coordinates(gNE)[,2]
+
+globalEastings  = gobalLons  # initialising arrays
+globalNorthings = gobalLats
+
+globalEastings[!is.na(gobalLons)]  = gE
+globalNorthings[!is.na(gobalLats)] = gN
+
+#
+lines(globalEastings,globalNorthings,col=Colour)
+
+}
+
+
+#### common projections used in displaying rainfall grids
+PROJ_LATLON = '+proj=longlat +datum=WGS84'
+PROJ_AEA = '+proj=aea +lat_1=-18.0 +lat_2=-36.0 +lon_0=132 +lat_0=0 +datum=WGS84'
+PROJ_GEO = '+proj=geos +lon_0=140.7 +h=35785863 +a=6378137.0 +b=6356752.3'
 
