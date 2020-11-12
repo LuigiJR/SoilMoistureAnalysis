@@ -20,6 +20,7 @@ MoistureRamp = colorRampPalette(rgb(
 
 
 DifferenceRamp = colorRampPalette(c('darkred','red','white','blue','navy'))
+SMcolours  = colorRampPalette(c('white',"peru","orange","yellow","forestgreen",'deepskyblue','navy','black'))
 
 # COAST LINES
 addCoastLines = function(Proj=PROJ_TARGET,Colour='darkgrey') {
